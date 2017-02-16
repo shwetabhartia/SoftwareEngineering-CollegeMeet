@@ -1,10 +1,10 @@
 var express = require('express');
 var app = express();
-PORT=3000;
+PORT=process.env.PORT || 3000;
 
-/*app.get('/', function (req, res) {
-	res.send('CollegeMeet!');
-});*/
+var middleware = require('./middleware.js');
+
+app.use(middleware.logger);
 
 app.get('/about', function (req, res) {
 	res.send('Abous Us!');
