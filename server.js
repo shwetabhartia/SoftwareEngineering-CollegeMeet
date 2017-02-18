@@ -14,7 +14,7 @@ app.get('/', function(req, res) {
 	res.send('CollegeMeet API Root');
 });
 
-app.get('/about', middleware.requireAuthentication, function(req, res) {
+app.get('/about', function(req, res) {
 	res.send('Abous Us!');
 });
 
