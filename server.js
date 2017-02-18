@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
 var db = require('./db.js');
+var bcrypt = require('bcryptjs');
 
 var app = express();
 PORT = process.env.PORT || 3000;
@@ -16,7 +17,7 @@ app.get('/about', function(req, res) {
 	res.send('Abous Us!');
 });
 
-app.post('/users', function (req, res) {
+app.post('/users', function(req, res) {
 	var body = _.pick(req.body, 'email', 'password');
 
 	db.user.create(body).then(function(user) {
@@ -26,10 +27,22 @@ app.post('/users', function (req, res) {
 	});
 });
 
-app.use(express.static(__dirname + '/public'));
+app.post('/users/login', function(req, res) {
+	var body = _.pick(req.body, 'email', 'password');
 
-db.sequelize.sync().then(function() {
-	app.listen(PORT, function() {
-		console.log('CollegeMeet listening on PORT '+ PORT);
+	db.user.authenticate(body).then(function(user) {
+		res.json(user.toPublicJSON());
+	}, function() {
+		res.status(401).send();
 	});
 });
+
+app.use(express.static(__dirname + '/public'));
+
+db.sequelize.sync({force: true}).then(function() {
+	app.listen(PORT, function() {
+		console.log('CollegeMeet listening on PORT ' + PORT);
+	});
+});
+
+//{force: true}
