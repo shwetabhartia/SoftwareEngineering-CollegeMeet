@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var _ = require('underscore');
 var db = require('./db.js');
 var bcrypt = require('bcryptjs');
+var middleware = require('./middleware.js')(db);
 
 var app = express();
 PORT = process.env.PORT || 3000;
@@ -13,7 +14,7 @@ app.get('/', function(req, res) {
 	res.send('CollegeMeet API Root');
 });
 
-app.get('/about', function(req, res) {
+app.get('/about', middleware.requireAuthentication, function(req, res) {
 	res.send('Abous Us!');
 });
 
